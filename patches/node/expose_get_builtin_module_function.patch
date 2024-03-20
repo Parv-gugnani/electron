@@ -1,0 +1,38 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Thiago de Arruda <tpadilha84@gmail.com>
+Date: Mon, 6 Mar 2017 10:42:34 -0300
+Subject: Expose `get_linked_module` function
+
+This is a requirement for electron/electron#8815, which exposes some linked
+modules to sandboxed renderers.
+
+TODO(codebytere): remove and replace with a public facing API.
+
+diff --git a/src/node_binding.cc b/src/node_binding.cc
+index 97257d47c6173872e55facf6f92801bd2fc3564b..8cdee730101fbdc79415654aa6fe401573979c0e 100644
+--- a/src/node_binding.cc
++++ b/src/node_binding.cc
+@@ -638,6 +638,10 @@ void GetInternalBinding(const FunctionCallbackInfo<Value>& args) {
+   args.GetReturnValue().Set(exports);
+ }
+ 
++node_module* get_linked_module(const char* name) {
++  return FindModule(modlist_linked, name, NM_F_LINKED);
++}
++
+ void GetLinkedBinding(const FunctionCallbackInfo<Value>& args) {
+   Environment* env = Environment::GetCurrent(args);
+ 
+diff --git a/src/node_binding.h b/src/node_binding.h
+index 7256bf2bbcf73214a25e61156305cc212b6f2451..d129981ad8588376eeee61155964062f624695d6 100644
+--- a/src/node_binding.h
++++ b/src/node_binding.h
+@@ -137,6 +137,8 @@ void GetInternalBinding(const v8::FunctionCallbackInfo<v8::Value>& args);
+ void GetLinkedBinding(const v8::FunctionCallbackInfo<v8::Value>& args);
+ void DLOpen(const v8::FunctionCallbackInfo<v8::Value>& args);
+ 
++NODE_EXTERN node_module* get_linked_module(const char *name);
++
+ }  // namespace binding
+ 
+ }  // namespace node
