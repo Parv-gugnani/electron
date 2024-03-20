@@ -30,7 +30,6 @@ if (require.main === module) {
     }
   );
 
-  // Forward the exit code of the child process to the parent process
   child.on("exit", (code) => process.exit(code));
 }
 
